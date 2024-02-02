@@ -4,7 +4,6 @@ set -e
 
 DMG_FILE_NAME="SF-Mono.dmg"
 FONT_URL="https://devimages-cdn.apple.com/design/resources/download/$DMG_FILE_NAME"
-PKG_FILE_NAME="SF Mono Fonts.pkg"
 
 TEMP_DIR=$(mktemp -d)
 DMG_FILE="$TEMP_DIR/$DMG_FILE_NAME"
@@ -20,6 +19,7 @@ DMG_VOLUME=/Volumes/SFMonoFonts
 
 # Locate the .pkg file
 PKG_FILE=$(find "$DMG_VOLUME" -name "*.pkg" -type f)
+echo "Found .pkg file: $PKG_FILE"
 
 # Check if the .pkg file is found
 if [ -z "$PKG_FILE" ]; then
@@ -29,19 +29,19 @@ if [ -z "$PKG_FILE" ]; then
     exit 1
 fi
 
-# Copy the .pkg file to the temporary directory
-cp "$PKG_FILE" $TEMP_DIR
+# Extract the contents of the .pkg file
+PKG_EXTRACT_PATH="$TEMP_DIR/extract"
+pkgutil --expand-full "$PKG_FILE" "$PKG_EXTRACT_PATH"
+echo "Contents of $PKG_FILE extracted into $PKG_EXTRACT_PATH"
 
 # Unmount the volume
 hdiutil detach "$DMG_VOLUME"
 
-echo ".pkg file copied to the temporary directory."
-
-# Extract the contents of the .pkg file into the 'content' directory
+# Copy the font files
+EXTRACTED_FONTS_PATH="$PKG_EXTRACT_PATH/SFMonoFonts.pkg/Payload/Library/Fonts"
 SOURCE_FONT_DIR="$TEMP_DIR/source"
-pkgutil --expand-full "$PKG_FILE" $SOURCE_FONT_DIR
-
-echo "Contents of $PKG_FILE extracted into $SOURCE_FONT_DIR."
+cp -r "$EXTRACTED_FONTS_PATH" "$SOURCE_FONT_DIR"
+echo "Font files copied from $EXTRACTED_FONTS_PATH to $SOURCE_FONT_DIR"
 
 # Patch the fonts
 DEST_FONT_DIR="./fonts"
