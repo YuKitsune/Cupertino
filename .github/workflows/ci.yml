@@ -21,8 +21,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build fonts
-        run: ./build-font.sh
+      - name: Extract fonts
+        run: ./extract-font.sh ./source
+
+      - name: Patch fonts
+        container:
+          image: nerdfonts/patcher
+          ports:
+            - 80
+          volumes:
+            - ./source:/in:Z
+            - ./fonts:/out:Z
+          options: --complete
       
       - name: Package fonts
         run: zip -rj ${{ env.FONT_ARCHIVE_NAME }} ./fonts # -j adds entries to the root of the archive.
