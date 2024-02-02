@@ -2,8 +2,15 @@
 
 set -e
 
-DMG_FILE_NAME="SF-Mono.dmg"
-FONT_URL="https://devimages-cdn.apple.com/design/resources/download/$DMG_FILE_NAME"
+if [ "$#" -ne 1 ]; then
+    echo "Usage: <destination>"
+    exit 1
+fi
+
+DEST_FONT_DIR="$1"
+
+FONT_URL="https://devimages-cdn.apple.com/design/resources/download/SF-Mono.dmg"
+DMG_FILE_NAME=$(basename $FONT_URL)
 
 TEMP_DIR=$(mktemp -d)
 DMG_FILE="$TEMP_DIR/$DMG_FILE_NAME"
@@ -39,16 +46,5 @@ hdiutil detach "$DMG_VOLUME"
 
 # Copy the font files
 EXTRACTED_FONTS_PATH="$PKG_EXTRACT_PATH/SFMonoFonts.pkg/Payload/Library/Fonts"
-SOURCE_FONT_DIR="$TEMP_DIR/source"
-cp -r "$EXTRACTED_FONTS_PATH" "$SOURCE_FONT_DIR"
-echo "Font files copied from $EXTRACTED_FONTS_PATH to $SOURCE_FONT_DIR"
-
-# Patch the fonts
-DEST_FONT_DIR="./fonts"
-docker run --rm \
-    -v $SOURCE_FONT_DIR:/in:Z \
-    -v $DEST_FONT_DIR:/out:Z \
-    nerdfonts/patcher \
-    --complete # Options
-
-echo "Success: SF Mono fonts patched with Nerd Fonts!"
+cp -r "$EXTRACTED_FONTS_PATH" "$DEST_FONT_DIR"
+echo "Success: Font files copied from $EXTRACTED_FONTS_PATH to $DEST_FONT_DIR"
