@@ -48,6 +48,8 @@ jobs:
       # At the time of writing, ncipollo/release-action is listed on the repo as one of the recommended alternatives.
       - uses: ncipollo/release-action@v1
         name: Create release
+        permissions:
+          contents: write
         with:
           tag: ${{ env.version }}
           artifacts: "${{ env.FONT_ARCHIVE_NAME }},${{ env.FONT_ARCHIVE_CHECKSUM_FILE_NAME }}"
