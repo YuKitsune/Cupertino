@@ -25,14 +25,9 @@ jobs:
         run: ./extract-font.sh ./source
 
       - name: Patch fonts
-        container:
-          image: nerdfonts/patcher
-          ports:
-            - 80
-          volumes:
-            - ./source:/in:Z
-            - ./fonts:/out:Z
-          options: --complete
+        run: |
+          brew install fontforge
+          for f in /source/*.otf; do [ -f "$f" ] && fontforge -script font-patcher -out /fonts --complete "$f";
       
       - name: Package fonts
         run: zip -rj ${{ env.FONT_ARCHIVE_NAME }} ./fonts # -j adds entries to the root of the archive.
