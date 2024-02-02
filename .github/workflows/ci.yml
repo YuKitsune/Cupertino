@@ -27,7 +27,7 @@ jobs:
       - name: Patch fonts
         run: |
           brew install fontforge
-          for f in /source/*.otf; do [ -f "$f" ] && fontforge -script font-patcher -out /fonts --complete "$f";
+          for f in /source/*.otf; do [ -f "$f" ] && fontforge -script font-patcher -out /fonts --complete "$f"; done
       
       - name: Package fonts
         run: zip -rj ${{ env.FONT_ARCHIVE_NAME }} ./fonts # -j adds entries to the root of the archive.
