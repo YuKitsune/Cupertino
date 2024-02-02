@@ -24,10 +24,19 @@ jobs:
       - name: Extract fonts
         run: ./extract-fonts.sh ./source
 
+      - name: Checkout NerdFonts
+        uses: actions/checkout@v4
+        with:
+          repository: 'ryanoasis/nerd-fonts'
+          ref: refs/tags/v3.1.1
+          fetch-depth: 1
+          path: nerdfonts
+
+      - name: Install FontForge
+        run: brew install fontforge
+
       - name: Patch fonts
-        run: |
-          brew install fontforge
-          for f in /source/*.otf; do [ -f "$f" ] && fontforge -script font-patcher -out /fonts --complete "$f"; done
+        run: for f in /source/*.otf; do [ -f "$f" ] && fontforge -script nerdfonts/font-patcher -out /fonts --complete "$f"; done
       
       - name: Package fonts
         run: zip -rj ${{ env.FONT_ARCHIVE_NAME }} ./fonts # -j adds entries to the root of the archive.
