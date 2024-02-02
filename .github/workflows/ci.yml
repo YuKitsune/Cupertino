@@ -10,8 +10,8 @@ on:
 
 env:
   VERSION: ${{ github.ref_name }}
-  FONT_ARCHIVE_NAME: SF-Mono-Nerd-Font-${{ env.VERSION }}.zip
-  FONT_ARCHIVE_CHECKSUM_FILE_NAME: SF-Mono-Nerd-Font-${{ env.version }}-SHA256SUM.txt
+  FONT_ARCHIVE_NAME: SF-Mono-Nerd-Font-${{ github.ref_name }}.zip
+  FONT_ARCHIVE_CHECKSUM_FILE_NAME: SF-Mono-Nerd-Font-${{ github.ref_name }}-SHA256SUM.txt
 
 jobs:
 
