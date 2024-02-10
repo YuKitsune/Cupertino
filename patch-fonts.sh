@@ -14,4 +14,7 @@ docker run --rm \
     -v $SOURCE_FONT_DIR:/in:Z \
     -v $DEST_FONT_DIR:/out:Z \
     nerdfonts/patcher \
-    --complete
+    --complete \
+    --adjust-line-height \
+    --use-single-width-glyphs \
+    --careful 
